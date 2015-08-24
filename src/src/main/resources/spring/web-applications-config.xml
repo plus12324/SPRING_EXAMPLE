@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 	xmlns="http://www.springframework.org/schema/beans" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context" 
+		 xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+		xmlns:aop="http://www.springframework.org/schema/aop" 
+		xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
+		xmlns:jaxws="http://cxf.apache.org/jaxws" 
+		xmlns:util="http://www.springframework.org/schema/util"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/jdbc 
+        				   http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.2.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+	
+	<context:annotation-config />
+	
+	<context:component-scan base-package="com.gSpring" >
+		<context:exclude-filter type="regex" expression="com.gSpring.Controller" />		
+	</context:component-scan>
+	
+<!-- 	<context:component-scan base-package="com.gSpring.dao" /> -->
+<!-- 	<context:component-scan base-package="com.gSpring.service" /> -->
+<!-- 	<context:component-scan base-package="egovframework.com"> -->
+<!-- 		<context:include-filter type="regex" expression="(impl)\..*" /> -->
+<!-- 	</context:component-scan> -->
+	
+	
+	<!-- ◆ 내장 데이터베이스 설정 -->
+<!-- 	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource"> -->
+<!--         <property name="driverClassName" value="org.hsqldb.jdbcDriver" /> -->
+<!--         <property name="url" value="jdbc\:hsqldb\:mem\:spring-playground" /> -->
+<!--         <property name="username" value="sa" /> -->
+<!--         <property name="password" value="" /> -->
+<!-- 	</bean> -->
+
+<!--     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"> -->
+<!--         <property name="dataSource" ref="dataSource" /> -->
+<!--     </bean> -->
+	
+	
+	
+	<jdbc:embedded-database id="dataSourceSpied" type="HSQL">
+        <jdbc:script location="classpath:/mybatis/schema.sql" />
+        <jdbc:script location="classpath:/mybatis/data.sql" />
+    </jdbc:embedded-database>
+
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied" />
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+<!-- 				<property name="margin" value="5" /> -->
+				<property name="sqlPrefix" value="SQL:::" />
+			</bean>
+		</property>
+	</bean>
+	
+ 
+	<!-- ◆ 마이바티스 설정 -->	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        
+        <!-- mapperLocations 프로퍼티는 매퍼에 관련된 자원의 위치를 나열한다. 
+		        이 프로퍼티는 마이바티스의 XML매퍼 파일들의 위치를 지정하기 위해 사용될 수 있다. 
+		        디렉터리 아래 모든 파일을 로드하기 위해 앤트(Ant) 스타일의 패턴을 사용할수도 있고 
+		        가장 상위 위치를 지정하는 것으로 재귀적으로 하위 경로를 찾도록 할수도 있다. -->
+       <property name="mapperLocations" value="classpath:/mybatis/query/*.xml" />
+        
+        <!-- 마이바티스 XML설정파일의 위치를 지정하기 위해 사용되는 configLocation이다. 
+        	 이 프로퍼티를 설정하는 것은 디폴트 설정을 가진 마이바티스 설정을 변경해야 할 경우 뿐이다. 
+        	 대개는 <settings>과 <typeAliases> 섹션을 변경하는 경우이다. -->
+<!--         <property name="configLocation" value="classpath:/mybatis/mybatis.xml" /> -->
+        
+    	<property name="typeAliasesPackage" value="com.gSpring.dto" />
+    </bean>
+     
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSession"/>
+    </bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.gSpring.dao"  />
+    </bean>
+	
+	
+	
+<!-- 	<bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory"> -->
+<!-- 	    <property name="dataSource" ref="dataSource" /> -->
+<!-- 	</bean> -->
+	
+	
+	<!-- 스프링 Message Source Service -->
+<!-- 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"> -->
+<!-- 		<property name="basenames"> -->
+<!-- 			<list> -->
+<!-- 				<value>classpath:META-INF/messages/exceptions</value> -->
+<!-- 				<value>classpath:META-INF/messages/adminException</value> -->
+<!-- 				<value>classpath:META-INF/messages/certification</value> -->
+<!-- 				<value>classpath:META-INF/messages/taskDescription</value> -->
+<!-- 				<value>classpath:META-INF/messages/medicalDuplicateSuccessCode</value> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+
+	<!-- 에듀카 Common Message Source Service -->
+<!-- 	<bean id="messageSourceService" class="com.educar.common.service.MessageSourceService" /> -->
+	<!-- 에듀카 Common Session Service 설정-->
+<!-- 	<bean id="sessionService" class="com.educar.common.service.SessionService" /> -->
+
+<!-- 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false"> -->
+<!-- 		<property name="autodetect" value="true"></property> -->
+<!-- 		<property name="namingStrategy" ref="namingStrategy"></property> -->
+<!-- 		<property name="assembler" ref="assembler"></property> -->
+<!-- 	</bean> -->
+
+<!-- 	<bean id="attributeSource" class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource" /> -->
+
+<!-- 	<bean id="assembler" class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler"> -->
+<!-- 		<property name="attributeSource" ref="attributeSource" /> -->
+<!-- 	</bean> -->
+
+<!-- 	<bean id="namingStrategy" class="org.springframework.jmx.export.naming.MetadataNamingStrategy"> -->
+<!-- 		<property name="attributeSource" ref="attributeSource" /> -->
+<!-- 	</bean> -->
+
+<!-- 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+	    <!-- one of the properties available; the maximum file size in bytes -->
+		<!-- WebSquare UI 자바스크립트 후처리가 안 되서 CommonFileUploadController 중복 처리 -->
+<!-- 	    <property name="maxUploadSize" value="5242880"/> -->
+<!-- 	</bean> -->
+
+	<!--  스프링에서 로딩된 모든 property를 map으로 가지고 제공하는 서비스 -->
+<!-- 	<bean id="postBeanProcessor" class="com.educar.common.service.PropertyService"/> -->
+	
+	<!--  place holder 프로퍼티 -->
+<!-- 	<bean id="educar.propertyConfigurer" -->
+<!-- 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> -->
+<!-- 		<property name="locations"> -->
+<!-- 			<list> -->
+<!-- 				<value>classpath:/META-INF/property/${spring.profiles.active}/cache.properties</value> -->
+<!-- 				<value>classpath:/META-INF/property/datasource.properties</value> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	
+	<!-- 2014.07.30 로그인한 사용자의 세션정보를 담아둘 저장소 -->
+<!-- 	<bean id="loginSessionID" class="com.educar.common.interceptor.LoginSessionID" /> -->
+	
+
+	<!--  각종 System property 정보를 가진 properties 파일 -->
+<!-- 	<util:properties id="systemProperties" location="classpath:META-INF/property/${spring.profiles.active}/system.properties" /> -->
+
+	<!-- mbean 모니터링용 빈들을 로딩한다. 미사용 시 커멘트 아웃 처리 필요 -->
+<!-- 	<import resource="mbean-config.xml"/> -->
+	
+</beans>

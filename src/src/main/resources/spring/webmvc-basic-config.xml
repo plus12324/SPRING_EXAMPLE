@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- The mvc:annotation-driven configures annotation-based handlers for the controllers. -->
+	<mvc:annotation-driven/>
+	
+	<!-- aop aspectj 설정
+		 CGLIB 프록시 강제 (비지니스객체가 인터페이스를 구현하지않을경우) -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	
+	
+	
+<!-- 	<mvc:interceptors> -->
+<!-- 		<bean class="com.educar.admin.service.AdminLoginCheckInterceptorService" init-method="init"/> -->
+<!-- 	</mvc:interceptors> -->
+ 
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	    <!-- one of the properties available; the maximum file size in bytes -->
+	    <property name="maxUploadSize" value="104857600"/>
+	</bean>
+	
+	<context:component-scan base-package="com.gSpring.controller" />
+	
+	<!-- 에듀카 Common Exception Handling Service -->
+	<!-- <bean id="exceptionHandlingService" class="com.educar.admin.service.AdminExceptionResolverService" /> -->
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/views/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+	<bean id="aspectjAdvisor" class="com.gSpring.common.aop.AspectjAdvisor" />
+</beans>
