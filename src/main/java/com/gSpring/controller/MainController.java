@@ -32,7 +32,7 @@ public class MainController {
  - View 객체 : View 객체를 직접 리턴, 해당 View 객체를 이용해서 뷰를 생성
  - void : 메서드가 ServletResponse나 HttpServletResponse 타입의 파라미터를 갖는 경우 메서드가 직접 응답을 처리한다고 가정, 
  		    그렇지 않을 경우 요청 뷰 이름은 요청 URL로부터 결정
- - @ResponseBody : 메서드에서 @ResponseBody 애노테이션이 적용된 경우 리턴 객체를 HTTP 응답으로 전송, 
+ - @ResponseBody : 메서드에서 @ResponseBody 애노테이션이 적용된 경우 리턴 객체를 HTTP 응답으로 전송,    
  				   HttpMessageConverter를 이용해서 객체를 HTTP 응답 스트림으로 변환
  */
 	
