@@ -1,4 +1,12 @@
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.stereotype.Component;
+
+import com.sun.istack.internal.NotNull;
+
 import static org.junit.Assert.*;
 
 /*
@@ -9,7 +17,32 @@ import static org.junit.Assert.*;
  */
 public class LibraryTest {
     @Test public void testSomeLibraryMethod() {
-        Library classUnderTest = new Library();
-        assertTrue("someLibraryMethod should return 'true'", classUnderTest.someLibraryMethod());
+//        Library classUnderTest = new Library();
+//        assertTrue("someLibraryMethod should return 'true'", classUnderTest.someLibraryMethod());
     }
+    
+    @SuppressWarnings("resource")
+	@Test
+    public void simpleAtAutowired(){
+    	AbstractApplicationContext ac = new AnnotationConfigApplicationContext(Bean1.class, Bean2.class);
+    	
+    	Bean1 b1 = ac.getBean(Bean1.class);
+    	assertNotNull(b1.bean2);
+    	
+    	assertEquals("abc", b1.msg);
+    	assertEquals("Windows 10", b1.osNm);     
+    	assertNotNull(b1.osNm);
+    }
+    
+
+private static class Bean1{
+	@Autowired Bean2 bean2;
+	@Value("abc") String msg;
+	@Value("#{systemProperties['os.name']}") String osNm;
+	private static final String msg2 = "fuck";
+}
+
+private static class Bean2{
+	
+}
 }

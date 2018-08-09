@@ -18,7 +18,18 @@
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<!-- The mvc:annotation-driven configures annotation-based handlers for the controllers. -->
-	<mvc:annotation-driven/>
+	<mvc:annotation-driven>
+    <mvc:message-converters>
+        <!-- @ResponseBody로 String 처리할때 한글처리 -->
+        <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+            <property name="supportedMediaTypes">
+                <list>
+                    <value>text/html;charset=UTF-8</value>
+                </list>
+            </property>
+        </bean>
+    </mvc:message-converters>
+</mvc:annotation-driven>
 	
 	<!-- aop aspectj 설정
 		 CGLIB 프록시 강제 (비지니스객체가 인터페이스를 구현하지않을경우) -->
@@ -37,7 +48,7 @@
 	
 	<context:component-scan base-package="com.gSpring.controller" />
 	<context:component-scan base-package="com.gSpring.service" />
-	<context:component-scan base-package="com.gSpring.dao" />
+<!-- 	<context:component-scan base-package="com.gSpring.dao" /> -->
 	
 	<!-- 에듀카 Common Exception Handling Service -->
 	<!-- <bean id="exceptionHandlingService" class="com.educar.admin.service.AdminExceptionResolverService" /> -->

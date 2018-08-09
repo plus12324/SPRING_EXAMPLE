@@ -13,8 +13,15 @@ public class MemberDao {
      
 	    @Autowired
 	    private SqlSessionTemplate sqlSession;
-	     
-	    protected void printQueryId(String queryId) {
+	    
+	    
+	    private String msg;	
+
+		public void setMsg(String msg) {
+			this.msg = msg;
+		}
+
+		protected void printQueryId(String queryId) {
 	        if(log.isDebugEnabled()){
 	            log.debug("\t QueryId  \t:  " + queryId);
 	        }

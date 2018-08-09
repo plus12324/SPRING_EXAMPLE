@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -17,10 +18,10 @@ public class MainController {
 	private Logger logger = Logger.getLogger(getClass());
 		
 	@RequestMapping(value = "/")
+	@ResponseBody
 	public String home(final HttpServletRequest req, HttpServletResponse res,ModelMap mMap) {
-		
-		logger.info("메인화면 Controller");				
-		return "home";
+		logger.info("메인화면 Controller");
+		return "한글";
 	}
 	
 /*
@@ -43,9 +44,10 @@ public class MainController {
 	}
 	
 	@RequestMapping(value = "/test1")
+	@ResponseBody
 	public ModelAndView test(ModelAndView mv) {
 		mv.addObject("name", "developer");
-		mv.setViewName("test");
+//		mv.setViewName("test");
 		logger.info("ModelAndView test");		
 		return mv;		
 	}
