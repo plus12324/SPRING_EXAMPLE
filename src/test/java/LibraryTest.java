@@ -3,9 +3,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.stereotype.Component;
-
-import com.sun.istack.internal.NotNull;
 
 import static org.junit.Assert.*;
 
